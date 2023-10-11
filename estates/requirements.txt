@@ -1,0 +1,5 @@
+itemadapter==0.7.0
+psycopg2==2.9.9
+psycopg2_binary==2.9.8
+Scrapy==2.6.3
+Twisted==22.10.0

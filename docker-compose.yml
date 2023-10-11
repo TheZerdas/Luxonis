@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  # Scrapy Spider Service
+  scrapy:
+    build: 
+      context: ./estates
+    command: scrapy crawl estates
+    volumes:
+      - ./estates:/app
+    environment:
+      - DATABASE_URI=postgresql://postgres:1234@localhost:5432/postgres
+    depends_on:
+      - db
+    networks:
+      - sreality-net
+
+  # Flask (HTTP Server) Service
+  web:
+    build:
+      context: ./HTTP_server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./HTTP_server:/app
+    depends_on:
+      - scrapy
+    networks:
+      - sreality-net
+
+  # PostgreSQL Database Service
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database_name
+    networks:
+      - sreality-net
+
+networks:
+  sreality-net:
+

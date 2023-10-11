@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sreality</title>
+</head>
+<body>
+    <h1>Sreality</h1>
+    <ul>
+        {% for item in data %}
+        <li>
+            <h2>{{ item[0] }}</h2>
+            <img src="{{ item[1] }}" alt="{{ item[0] }}">
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
