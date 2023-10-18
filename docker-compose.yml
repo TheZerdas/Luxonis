@@ -9,7 +9,7 @@ services:
     volumes:
       - ./estates:/app
     environment:
-      - DATABASE_URI=postgresql://postgres:1234@localhost:5432/postgres
+      - DATABASE_URI=postgresql://postgres:1234@db:5432/postgres
     depends_on:
       - db
     networks:
@@ -25,16 +25,23 @@ services:
       - ./HTTP_server:/app
     depends_on:
       - scrapy
+      - db
     networks:
       - sreality-net
+    environment:
+      - DATABASE_URI=postgresql://postgres:1234@db:5432/postgres
+
 
   # PostgreSQL Database Service
   db:
     image: postgres:latest
+    restart: always
     environment:
-      POSTGRES_USER: username
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: database_name
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
     networks:
       - sreality-net
 

@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     # Connect to the PostgreSQL database and fetch the scraped data
-    conn = psycopg2.connect(host="localhost", dbname="postgres", user="postgres",
+    conn = psycopg2.connect(host="db", dbname="postgres", user="postgres",
                                 password="1234", port=5432)
     cursor = conn.cursor()
     cursor.execute("SELECT title, image_url FROM flats_data")

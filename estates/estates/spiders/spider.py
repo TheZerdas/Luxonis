@@ -3,16 +3,22 @@ import json
 import re
 from estates.settings import DATABASE_URI
 import psycopg2
+import requests
+from scrapy.crawler import CrawlerProcess
 
 
 class FlatSpider(scrapy.Spider):
     name = 'estates'
     allowed_domains = ['sreality.cz']
     start_urls = ['https://www.sreality.cz/api/cs/v2/estates?category_main_cb=1&category_type_cb=1&page=0&per_page=500']
-
+   
+    def start_requests(self):
+        for url in self.start_urls:
+            yield scrapy.Request(url=url, callback=self.parse)
+   
     def parse(self, response, **kwargs):
+        response_json = response.json()
         # converting the response body of the HTTP response into a dictionary object 
-        response_json = json.loads(response.body)
         for flat in response_json.get('_embedded').get('estates'):
             title = flat.get('name')
             image_url = flat.get('_links').get('images')[0].get('href')
@@ -32,8 +38,8 @@ class FlatSpider(scrapy.Spider):
             cursor = conn.cursor()
 
             try:
-                cursor.execute("""DELETE FROM flats_data
-                    WHERE (SELECT COUNT(*) FROM flats_data) > 500;""")
+                #cursor.execute("""DELETE FROM flats_data
+                #    WHERE (SELECT COUNT(*) FROM flats_data) > 500;""")
                 cursor.execute("""CREATE TABLE IF NOT EXISTS flats_data (
                     title VARCHAR(255),
                     image_url VARCHAR(2083)
